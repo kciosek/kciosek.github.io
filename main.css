@@ -1,0 +1,179 @@
+IMG.picture
+{
+	height: 9em;
+}
+.header
+{
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	position: relative;
+	max-width: 25em;
+	margin: 0 auto;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	background: rgb(255, 255, 255);
+}
+
+.firstPar
+{
+    margin-top: 0em;
+}
+
+p
+{
+	margin-top: 0.25em;
+	margin-bottom: 0.5em;
+}
+
+.paperCurl
+{
+	position: relative;
+}
+.paperCurl:before, .paperCurl:after
+{
+	z-index: -1;
+	position: absolute;
+	content: "";
+	bottom: 15px;
+	left: 10px;
+	width: 50%;
+	top: 80%;
+	max-width: 300px;
+	background: #777;
+	-webkit-box-shadow: 0 15px 10px #777;
+	-moz-box-shadow: 0 15px 10px #777;
+	box-shadow: 0 15px 10px #777;
+	-webkit-transform: rotate(-3deg);
+	-moz-transform: rotate(-3deg);
+	-o-transform: rotate(-3deg);
+	-ms-transform: rotate(-3deg);
+	transform: rotate(-3deg);
+}
+.paperCurl:after
+{
+	-webkit-transform: rotate(3deg);
+	-moz-transform: rotate(3deg);
+	-o-transform: rotate(3deg);
+	-ms-transform: rotate(3deg);
+	transform: rotate(3deg);
+	right: 10px;
+	left: auto;
+}
+.nameTag
+{
+	font-weight: bold;
+	font-size: 13pt;
+	font-family: Tahoma;
+}
+BODY
+{
+	font-family: Georgia;
+	font-size: 11pt;
+	background-image: url(background-small.png);
+}
+.pictureFrame
+{
+	width: 10em;
+	float: right;
+}
+.featuredEntry
+{
+	color: darkgreen;
+}
+.contentPane
+{
+	padding-top: 0.4em;
+	padding-bottom: 1.5em;
+}
+.heading
+{
+	font-weight: bold;
+	padding-top: 0.5em;
+	border-bottom: 1px solid #D1D1D1;
+	font-family: Tahoma;
+}
+.publicationList
+{
+	text-indent: 0em;
+	padding-top: 0em;
+	margin-bottom: 0em;
+	margin-top: 0em;
+	padding-bottom: 1.5em;
+	text-align: left;
+}
+.publicationEntry
+{
+  text-align: left;
+}
+.position
+{
+	padding-bottom: 0em;
+	padding-top: 0em;
+}
+.social-links
+{
+	padding-bottom: 0em;
+	padding-top: 0em;
+}
+
+.separator
+{
+	clear: both;
+}
+TD.headerCell
+{
+	margin: 0em;
+	padding: 0em;
+}
+TABLE.headerTable
+{
+	width: 100%;
+	margin: 0em;
+	padding: 0em;
+}
+.contactInfo
+{
+	padding: 0em;
+	padding-top: 0.2em;
+	margin: 0em;
+}
+TD.contactUp
+{
+	vertical-align: top;
+}
+TABLE.contactTable
+{
+	height: 10em;
+}
+TD.contactDown
+{
+	vertical-align: bottom;
+}
+TD.socialInfo
+{
+
+}
+.bibtexToggle
+{
+  display: inline;
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}
+.bibtexDisplay
+{
+    display: none;
+}
+.contentPane
+{
+	max-width: 60em;
+	margin: 0 auto;
+	text-align:justify;
+}
+div.cnd {
+	width: 560px;
+	display: block;
+	background-color: #eee;
+	margin-left: auto;
+	margin-right: auto;
+  }
