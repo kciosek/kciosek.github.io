@@ -30,13 +30,18 @@ def format_authors(author_string):
     formatted = []
 
     for a in authors:
-        parts = a.split()
-        if len(parts) > 1:
+
+        if "," in a:
+            # Format: Last, First Middle
+            last, first = [x.strip() for x in a.split(",", 1)]
+            initials = " ".join(p[0] + "." for p in first.split())
+        else:
+            # Format: First Middle Last
+            parts = a.split()
             last = parts[-1]
             initials = " ".join(p[0] + "." for p in parts[:-1])
-            formatted.append(f"{last}, {initials}")
-        else:
-            formatted.append(a)
+
+        formatted.append(f"{last}, {initials}")
 
     return ", ".join(formatted)
 
@@ -51,7 +56,6 @@ def generate_html(entry, key):
     venue = entry.get("journal") or entry.get("booktitle") or ""
     year = entry.get("year", "")
 
-    # Prefer pdf field
     link = entry.get("pdf") or entry.get("url") or ""
 
     span_id = make_id(key)
@@ -99,8 +103,7 @@ def main():
         print(f"Error: key '{key}' not found")
         sys.exit(1)
 
-    html = generate_html(entries[key], key)
-    print(html)
+    print(generate_html(entries[key], key))
 
 
 if __name__ == "__main__":
