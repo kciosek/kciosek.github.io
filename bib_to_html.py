@@ -2,58 +2,60 @@
 
 import sys
 import re
+import bibtexparser
+import latexcodec
+import codecs
 
 
-def parse_bibtex_entries(text):
-    entries = {}
-    pattern = re.compile(r'@(\w+)\s*{\s*([^,]+),(.*?)\n}', re.S)
-
-    for m in pattern.finditer(text):
-        entry_type, key, body = m.groups()
-
-        fields = dict(
-            (k.lower(), v.strip())
-            for k, v in re.findall(r'(\w+)\s*=\s*[{"]([^"}]+)[}"]', body)
-        )
-
-        entries[key.strip()] = {
-            "type": entry_type,
-            **fields,
-            "raw": m.group(0)
-        }
-
-    return entries
+def latex_to_unicode(s):
+    s = codecs.decode(s, "ulatex")
+    s = s.replace("{", "").replace("}", "")
+    return s
 
 
-def format_authors(author_string):
-    authors = [a.strip() for a in author_string.split(" and ")]
-    formatted = []
+def format_author(author):
 
-    for a in authors:
+    author = latex_to_unicode(author.strip())
 
-        if "," in a:
-            # Format: Last, First Middle
-            last, first = [x.strip() for x in a.split(",", 1)]
-            initials = " ".join(p[0] + "." for p in first.split())
-        else:
-            # Format: First Middle Last
-            parts = a.split()
-            last = parts[-1]
-            initials = " ".join(p[0] + "." for p in parts[:-1])
+    if "," in author:
+        # "Last, First Middle"
+        last, first = [x.strip() for x in author.split(",", 1)]
+        first_parts = first.split()
+    else:
+        # "First Middle Last"
+        parts = author.split()
+        last = parts[-1]
+        first_parts = parts[:-1]
 
-        formatted.append(f"{last}, {initials}")
+    initials = " ".join(p[0] + "." for p in first_parts if p)
 
-    return ", ".join(formatted)
+    return f"{last}, {initials}"
+
+
+def format_authors(author_field):
+
+    authors = [a.strip() for a in author_field.split(" and ")]
+
+    return ", ".join(format_author(a) for a in authors)
 
 
 def make_id(key):
-    return re.sub(r'[^a-zA-Z0-9\-]', '', key.lower())
+    return re.sub(r"[^a-zA-Z0-9\-]", "", key.lower())
 
 
-def generate_html(entry, key):
+def generate_html(entry):
+
+    key = entry["ID"]
+
     authors = format_authors(entry.get("author", ""))
-    title = entry.get("title", "")
-    venue = entry.get("journal") or entry.get("booktitle") or ""
+
+    title = latex_to_unicode(entry.get("title", ""))
+
+    venue = (
+        latex_to_unicode(entry.get("journal", ""))
+        or latex_to_unicode(entry.get("booktitle", ""))
+    )
+
     year = entry.get("year", "")
 
     link = entry.get("pdf") or entry.get("url") or ""
@@ -68,6 +70,10 @@ def generate_html(entry, key):
     else:
         link_html = "<span>(link coming later)</span>"
 
+    db = bibtexparser.bibdatabase.BibDatabase()
+    db.entries = [entry]
+    raw_bibtex = bibtexparser.dumps(db).strip()
+
     html = f"""
 <li>
 <div class="publicationEntry">
@@ -78,7 +84,7 @@ def generate_html(entry, key):
 
 </div>
 <div><pre id="{pre_id}" class="bibtexDisplay">
-{entry["raw"]}
+{raw_bibtex}
 </pre></div>
 </li>
 """.strip()
@@ -87,6 +93,7 @@ def generate_html(entry, key):
 
 
 def main():
+
     if len(sys.argv) != 3:
         print("Usage: python bib_to_html.py file.bib bibtex_key")
         sys.exit(1)
@@ -94,16 +101,16 @@ def main():
     bibfile = sys.argv[1]
     key = sys.argv[2]
 
-    with open(bibfile) as f:
-        text = f.read()
+    with open(bibfile) as bibtex_file:
+        bib_database = bibtexparser.load(bibtex_file)
 
-    entries = parse_bibtex_entries(text)
+    entries = {entry["ID"]: entry for entry in bib_database.entries}
 
     if key not in entries:
         print(f"Error: key '{key}' not found")
         sys.exit(1)
 
-    print(generate_html(entries[key], key))
+    print(generate_html(entries[key]))
 
 
 if __name__ == "__main__":
